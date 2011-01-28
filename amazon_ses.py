@@ -77,7 +77,11 @@ class AmazonSES:
         
     def sendEmail(self, source, destination, message, replyToAddresses=None, returnPath=None):
         params = { 'Source': source }
-        params['Destination.ToAddresses.member.1'] = destination
+        if not isinstance(destination, basestring) and getattr(destination, '__iter__', False):
+            for i, address in enumerate(destination, 1):
+                params['Destination.ToAddresses.member.%d' % i] = address
+        else:
+            params['Destination.ToAddresses.member.1'] = destination
         params['Message.Subject.Charset'] = message.charset
         params['Message.Subject.Data'] = message.subject
         if message.bodyText:
