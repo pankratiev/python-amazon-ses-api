@@ -75,13 +75,18 @@ class AmazonSES:
     def listVerifiedEmailAddresses(self):
         return self._performAction('ListVerifiedEmailAddresses')
         
-    def sendEmail(self, source, destination, message, replyToAddresses=None, returnPath=None):
+    def sendEmail(self, source, destination, message, replyToAddresses=None, returnPath=None, toAddresses=None, ccAddresses=None, bccAddresses=None):
         params = { 'Source': source }
-        if not isinstance(destination, basestring) and getattr(destination, '__iter__', False):
-            for i, address in enumerate(destination, 1):
-                params['Destination.ToAddresses.member.%d' % i] = address
-        else:
-            params['Destination.ToAddresses.member.1'] = destination
+        # for backward compatibility
+        if destination:
+            toAddresses = destination
+        for objName, addresses in zip(["ToAddresses", "CcAddresses", "BccAddresses"], [toAddresses, ccAddresses, bccAddresses]):
+            if addresses:
+                if not isinstance(addresses, basestring) and getattr(addresses, '__iter__', False):
+                    for i, address in enumerate(addresses, 1):
+                        params['Destination.%s.member.%d' % (objName, i)] = address
+                else:
+                    params['Destination.%s.member.1' % objName] = addresses
         params['Message.Subject.Charset'] = message.charset
         params['Message.Subject.Data'] = message.subject
         if message.bodyText:
