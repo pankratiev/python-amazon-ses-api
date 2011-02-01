@@ -49,3 +49,5 @@ Methods return instances of AmazonResult or derived class (for example, method a
 Author
 ===============
 Vladimir Pankratiev
+http://tagmask.com
+
