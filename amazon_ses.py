@@ -86,7 +86,10 @@ class AmazonSES:
                     for i, address in enumerate(addresses, 1):
                         params['Destination.%s.member.%d' % (objName, i)] = address
                 else:
-                    params['Destination.%s.member.1' % objName] = addresses
+                    params['Destination.%s.member.1' % objName] = addresses                    
+        if not returnPath:
+            returnPath = source
+        params['ReturnPath'] = returnPath        
         params['Message.Subject.Charset'] = message.charset
         params['Message.Subject.Data'] = message.subject
         if message.bodyText:
