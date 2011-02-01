@@ -78,11 +78,8 @@ class AmazonSES:
     def listVerifiedEmailAddresses(self):
         return self._performAction('ListVerifiedEmailAddresses')
         
-    def sendEmail(self, source, destination, message, replyToAddresses=None, returnPath=None, toAddresses=None, ccAddresses=None, bccAddresses=None):
+    def sendEmail(self, source, toAddresses, message, replyToAddresses=None, returnPath=None, ccAddresses=None, bccAddresses=None):
         params = { 'Source': source }
-        # for backward compatibility
-        if destination:
-            toAddresses = destination
         for objName, addresses in zip(["ToAddresses", "CcAddresses", "BccAddresses"], [toAddresses, ccAddresses, bccAddresses]):
             if addresses:
                 if not isinstance(addresses, basestring) and getattr(addresses, '__iter__', False):
