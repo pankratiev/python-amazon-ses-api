@@ -22,9 +22,12 @@ import httplib
 import urllib
 import hashlib
 import hmac
-from datetime import datetime
+import logging
 import base64
+from datetime import datetime
 from xml.etree.ElementTree import XML
+
+log = logging.getLogger(__name__)
 
 class AmazonSES:
     def __init__(self, accessKeyID, secretAccessKey):
@@ -238,8 +241,9 @@ class AmazonResponseParser:
             
     def parse(self, actionName, statusCode, reason, responseResult):        
         xmlResponse = self.XmlResponse(responseResult)
-        print statusCode, reason
-        print responseResult                
+        log.info('Response status code: %s, reason: %s', statusCode, reason)
+        log.debug(responseResult)
+        
         result = None                
         if statusCode != 200:
             self._raiseError(xmlResponse)
